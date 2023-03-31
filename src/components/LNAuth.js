@@ -1,33 +1,27 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import QRCode from "qrcode.react";
 
 const LNAuth = () => {
-  const [authURL, setAuthURL] = useState(null);
+  const [lnurl, setLnurl] = useState(null);
 
   useEffect(() => {
-    const fetchAuthURL = async () => {
+    // Fetch the lnurl from the API
+    const fetchLnurl = async () => {
       try {
-        const response = await axios.get("/api/auth-url");
-        setAuthURL(response.data.url);
+        const response = await fetch("/api/login");
+        const data = await response.json();
+        setLnurl(data.lnurl);
       } catch (error) {
-        console.error("Failed to fetch auth URL:", error);
+        console.error("Error fetching lnurl:", error);
       }
     };
 
-    fetchAuthURL();
+    fetchLnurl();
   }, []);
 
   return (
     <div>
-      {authURL && (
-        <div>
-          <h1>Login with LNURL-auth</h1>
-          <br />
-          <QRCode size={512} value={authURL} />
-          <p>Scan this QR code with your LN wallet to log in.</p>
-        </div>
-      )}
+      {lnurl ? <QRCode value={lnurl} size={256} /> : <p>Loading QR Code...</p>}
     </div>
   );
 };

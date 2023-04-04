@@ -1,9 +1,11 @@
 import { utils, verify } from "@noble/secp256k1";
 import { encodeLnurl } from "../../utils";
+import { withIronSession } from "iron-session/next";
+import { ironSessionOptions } from "../../ironSessionOptions";
 
 const pending = new Map();
 
-export default async function handler(req, res) {
+const handler = async function handler(req, res) {
   // Get the host from request headers
   const { host } = req.headers;
 
@@ -16,6 +18,10 @@ export default async function handler(req, res) {
       // If the signature is valid and k1 is in the pending map, the request is valid
       // Remove k1 from the pending map to prevent reuse
       pending.delete(k1);
+
+      // Store the user key in the session
+      req.session.set("userKey", key);
+      await req.session.save();
 
       console.log("User logged in successfully!");
 
@@ -46,7 +52,9 @@ export default async function handler(req, res) {
     // Return the lnurl to the client for displaying the QR code
     return res.status(200).json({ lnurl });
   }
-}
+};
+
+export default withIronSession(handler, ironSessionOptions);
 
 function generateLnurl(url, k1) {
   // Generate the lnurl-auth login URL with the provided k1 value

@@ -1,11 +1,11 @@
 import { utils, verify } from "@noble/secp256k1";
 import { encodeLnurl } from "../../utils";
-import { withIronSession } from "iron-session/next";
-import { ironSessionOptions } from "../../ironSessionOptions";
+// import { withIronSession } from "iron-session/next";
+// import { ironSessionOptions } from "../../ironSessionOptions";
 
 const pending = new Map();
 
-const handler = async function handler(req, res) {
+export default async function handler(req, res) {
   // Get the host from request headers
   const { host } = req.headers;
 
@@ -45,6 +45,8 @@ const handler = async function handler(req, res) {
     // Store the generated k1 value in the pending map, awaiting for a signature verification
     pending.set(generatedK1, {});
 
+    console.log(req.url, "yoooooooo");
+
     // Generate the lnurl-auth login URL using the full URL and generated k1 value
     const fullUrl = `https://${host}${req.url}`;
     const lnurl = generateLnurl(fullUrl, generatedK1);
@@ -52,9 +54,7 @@ const handler = async function handler(req, res) {
     // Return the lnurl to the client for displaying the QR code
     return res.status(200).json({ lnurl });
   }
-};
-
-export default withIronSession(handler, ironSessionOptions);
+}
 
 function generateLnurl(url, k1) {
   // Generate the lnurl-auth login URL with the provided k1 value

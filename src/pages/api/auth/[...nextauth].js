@@ -33,6 +33,10 @@ const authOptions = {
 
       return session;
     },
+    async redirect({ url, baseUrl }) {
+      // Define the redirect callback to redirect the user to the root URL after signing in
+      return url.split("/signin")[0];
+    },
   },
   secret: process.env.NEXTAUTH_SECRET,
   session: { jwt: true },

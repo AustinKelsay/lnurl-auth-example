@@ -77,10 +77,15 @@ const LNAuth = () => {
   return (
     <div>
       {status === "loading" && <div>Loading...</div>}
-      {status === "unauthenticated" && <QRCode size={256} value={lnurl} />}
+      {status === "unauthenticated" && (
+        <div>
+          <h1>Not signed in</h1>
+          <QRCode size={256} value={lnurl} />
+        </div>
+      )}
       {status === "authenticated" && session.user.pubkey && (
         <div>
-          <div>Signed in with this node pubkey {session.user.pubkey}</div>
+          <h1>Signed in with this node pubkey {session.user.pubkey}</h1>
         </div>
       )}
     </div>

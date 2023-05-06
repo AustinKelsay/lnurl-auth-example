@@ -20,12 +20,14 @@ const authOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user && user.pubkey && user.k1) {
+        // Add the key and k1 from the user object passed from authorize
         token.key = user.pubkey;
         token.k1 = user.k1;
       }
       return token;
     },
     async session({ session, token }) {
+      // Add the key and k1 from the token object passed from authorize
       if (token.key && token.k1) {
         session.user.pubkey = token.key;
         session.user.k1 = token.k1;

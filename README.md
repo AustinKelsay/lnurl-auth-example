@@ -1,1 +1,1 @@
-A simple LNUrl-Auth example implementation with NextJS
+A simple LNUrl-Auth example implementation using NextJS and NextAuth
